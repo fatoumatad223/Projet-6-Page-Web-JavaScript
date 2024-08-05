@@ -1,4 +1,5 @@
 
+
 // ÉTAPE 1 - récupération des photos de la galerie :
 
 async function getWork() {
@@ -106,6 +107,25 @@ if (loged == "true") {
     logout.addEventListener("click", () => {
         window.sessionStorage.loged = false;
     })
+
+    const isLoggedIn = true; // ou false, selon l'état de la connexion
+
+    // Fonction pour afficher ou masquer les éléments
+    function toggleElements() {
+        var topBar = document.querySelector('.top-bar');
+        var btnModif = document.querySelector('.btnModif');
+        if (isLoggedIn) {
+            topBar.style.display = 'flex';
+            btnModif.style.display = 'flex';
+        } else {
+            topBar.style.display = 'none';
+            btnModif.style.display = 'none';
+        }
+    }
+
+    // Appel de la fonction au chargement de la page
+    document.addEventListener('DOMContentLoaded', toggleElements);
+
 }
 
 // ÉTAPE 4 : création de la modale : 
