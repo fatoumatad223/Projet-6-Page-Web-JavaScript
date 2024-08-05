@@ -1,0 +1,87 @@
+
+/* modale */
+.creationModale{
+    position: fixed;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(202, 198, 198, 0.683);
+    width: 100%;
+    height: 100%;
+}
+
+.modaleProjets{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    background-color: white;
+    width: 30%;
+    border-radius: 10px;
+    position: relative;
+    padding: 5%;
+}
+
+.modaleProjets p{
+    font-size: 2em;
+}
+
+.modaleProjets button{
+	color: white;
+	background-color: #1D6154;
+    border: none;
+    width: 60%;
+    cursor: pointer;
+}
+
+.closeModale{
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    cursor: pointer;
+    font-size: 2em;
+}
+
+.imagesTravaux{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin: 50px;
+    width: 80%;
+    padding-bottom: 15%;
+    border-bottom: 1px solid lightgray;
+}
+
+.ajoutTravaux {
+    width: 18%;
+    position: relative; /* Assure que le positionnement absolu de l'icône de poubelle fonctionne */
+}
+
+.miseEnPage {
+    display: block; /* Assure que l'image prend tout l'espace du conteneur */
+    width: 100%;
+    height: 100%;
+}
+
+.trashIcon {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: rgba(0, 0, 0, 1);
+    color: white;
+    border-radius: 4px;
+    padding: 5px;
+    cursor: pointer;
+  }
+  
+.borderGreen{
+    border-bottom: 1px solid #1D6154;
+    padding-bottom: 30px;
+}
+  
+  
+
+
