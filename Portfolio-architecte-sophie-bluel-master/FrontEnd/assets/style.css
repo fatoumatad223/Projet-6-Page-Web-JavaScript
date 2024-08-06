@@ -188,7 +188,7 @@ h2 {
 	font-family: 'Syne';
 	font-weight: 700;
 	font-size: 30px;
-	color: #1D6154
+	color: #1D6154;
 }
 
 .btnModif {
@@ -209,7 +209,7 @@ nav ul {
 	align-items: center;
 	list-style-type: none;
 	gap: 20px;
-
+	cursor: pointer;
 }
 
 nav li {

@@ -114,12 +114,16 @@ if (loged == "true") {
     function toggleElements() {
         var topBar = document.querySelector('.top-bar');
         var btnModif = document.querySelector('.btnModif');
+        var filtres = document.querySelector(".filtres");
+
         if (isLoggedIn) {
             topBar.style.display = 'flex';
             btnModif.style.display = 'flex';
+            filtres.style.display = 'none';
         } else {
             topBar.style.display = 'none';
             btnModif.style.display = 'none';
+            filtres.style.display = 'flex';
         }
     }
 
@@ -220,27 +224,6 @@ async function genererModaleAjout() {
 }
 genererModaleAjout();
 
-// prévisualiser la photo choisie
-const afficheImg = document.querySelector(".contenuFichier img");
-const inputFile = document.querySelector(".contenuFichier input");
-const labelFile = document.querySelector(".contenuFichier label");
-const iconeFile = document.querySelector(".contenuFichier i");
-const paragrapheFile = document.querySelector(".contenuFichier p");
-
-inputFile.addEventListener("change", () => {
-    const file = inputFile.files[0]
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            afficheImg.src = e.target.result
-            afficheImg.style.display = "flex"
-            labelFile.style.display = "none"
-            iconeFile.style.display = "none"
-            paragrapheFile.style.display = "none"
-        }
-        reader.readAsDataURL(file);
-    }
-})
 
 // liste de catégorie dans le filtre input select 
 async function displayFiltreModale() {
@@ -256,39 +239,91 @@ async function displayFiltreModale() {
 }
 displayFiltreModale();
 
-// valider et afficher la photo dans la galerie
+
+// Sélection des éléments nécessaires
+const afficheImg = document.querySelector(".contenuFichier img");
+const inputFile = document.querySelector(".contenuFichier input");
+const labelFile = document.querySelector(".contenuFichier label");
+const iconeFile = document.querySelector(".contenuFichier i");
+const paragrapheFile = document.querySelector(".contenuFichier p");
+
 const form = document.querySelector(".modaleAjoutImg form");
 const title = document.querySelector(".modaleAjoutImg #title");
 const category = document.querySelector(".modaleAjoutImg #category");
+const submitButton = document.querySelector(".modaleAjoutImg button");
 const token = localStorage.getItem("token");
-const submitButton = document.querySelector("modaleForm button");
 
+// Limite de taille en octets (4 Mo)
+const maxFileSize = 4 * 1024 * 1024;
+
+// Types de fichiers autorisés
+const allowedFileTypes = ['image/jpeg', 'image/png'];
+
+inputFile.addEventListener("change", () => {
+    const file = inputFile.files[0];
+
+    if (file) {
+        if (!allowedFileTypes.includes(file.type)) {
+            alert("Veuillez sélectionner un fichier JPG ou PNG.");
+            inputFile.value = ''; // Réinitialiser l'input
+            return;
+        }
+
+        if (file.size > maxFileSize) {
+            alert("Le fichier doit être inférieur à 4 Mo.");
+            inputFile.value = ''; // Réinitialiser l'input
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            afficheImg.src = e.target.result;
+            afficheImg.style.display = "flex";
+            labelFile.style.display = "none";
+            iconeFile.style.display = "none";
+            paragrapheFile.style.display = "none";
+        };
+        reader.readAsDataURL(file);
+    }
+});
 
 form.addEventListener("submit", async (e) => {
-    e.preventDefault()                                                          // annule le comportement par défaut
-    const formData = new FormData()
-    const inputFile = document.querySelector("#file");
+    e.preventDefault(); // annule le comportement par défaut
 
-    formData.append("image", inputFile.files[0])
-    formData.append("title", title.value)
-    formData.append("category", category.value)
+    const formData = new FormData();
+    formData.append("image", inputFile.files[0]);
+    formData.append("title", title.value);
+    formData.append("category", category.value);
 
-    console.log(form);
-    console.log(formData);
+    try {
+        const response = await fetch('http://localhost:5678/api/works', {
+            method: "POST",
+            body: formData,
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            }
+        });
 
-    fetch('http://localhost:5678/api/works', {
-        method: "POST",
-        body: formData,
-        headers: {
-            'Authorization': `Bearer ${token}`,
-        }
-    })
-        .then(response => response.json)
-        .then(data => {
-            console.log(data);
-            console.log("nouvelle image", data)
-            displayImage()
-            genererProjetModale()
-        })
-})
+        const data = await response.json();
+        console.log(data);
+        console.log("nouvelle image", data);
+        displayImage();
+        genererProjetModale();
+
+        // Change the submit button color to green
+        submitButton.style.backgroundColor = "#1D6154";
+
+        // Clear the input fields
+        afficheImg.style.display = "none";
+        labelFile.style.display = "block";
+        iconeFile.style.display = "block";
+        paragrapheFile.style.display = "block";
+        inputFile.value = '';
+        title.value = '';
+        category.value = '';
+
+    } catch (error) {
+        console.error("Error:", error);
+    }
+});
 
